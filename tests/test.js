@@ -265,8 +265,9 @@ const runTest = async () => {
   await checkShoppingExpander(); //Will check shopping expander
 
   //Final Exit
-  await wait(60000 * 15);
-  driver.quit();
+  // await wait(10000);
+  await driver.close();
+  // driver.quit();
 };
 
 runTest();
