@@ -232,10 +232,13 @@ const test = async () => {
     //END OF Audience Constructor Script
   };
 
+  const checkShoppingExpander = async () => {};
+
   //Activation
   await login(); //Logs in
   await checkSettings(); // Checks all settings
   await checkAppSuiteAudienceConstructor(); //Will check until map loads
+  await checkShoppingExpander(); //Will check shopping expander
 
   //Final Exit
   await wait(60000);
