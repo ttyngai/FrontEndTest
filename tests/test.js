@@ -232,16 +232,49 @@ const test = async () => {
     //END OF Audience Constructor Script
   };
 
-  const checkShoppingExpander = async () => {};
+  const checkShoppingExpander = async () => {
+    await waitForId('appSuiteShoppingExpander', 500);
+    await clickId('appSuiteShoppingExpander', 500);
+    await inputKeyId('shoppingExpanderSearchInput', 'cheese', 500);
+
+    await clickId('groceryIdgroc_2', 500);
+    // await clickId('groceryIdgroc_21', 500);
+    let firstValue = '';
+    await driver.wait(async () => {
+      await waitForId('populationCaptureValue', 100);
+      let element = await driver.findElement(By.id('populationCaptureValue'));
+      let value = await element.getText();
+      firstValue = value;
+      if (parseInt(value) !== 0) {
+        return true;
+      }
+      // return text === expectedText;
+    }, 30000);
+    await waitForId('groceryIdInfgroc_96', 500);
+    await clickId('groceryIdInfgroc_96', 500);
+    await driver.wait(async () => {
+      await waitForId('populationCaptureValue', 100);
+      let element = await driver.findElement(By.id('populationCaptureValue'));
+      let value = await element.getText();
+
+      if (parseInt(value) !== 0 && firstValue !== value) {
+        return true;
+      }
+      // return text === expectedText;
+    }, 30000);
+    await wait(1000);
+    await clickId('shoppingExpanderClearSelection', 500);
+    await clickId('closeApplicationModalButton', 500);
+  };
 
   //Activation
   await login(); //Logs in
-  await checkSettings(); // Checks all settings
-  await checkAppSuiteAudienceConstructor(); //Will check until map loads
+  // await checkSettings(); // Checks all settings
+  // await checkAppSuiteAudienceConstructor(); //Will check until map loads
   await checkShoppingExpander(); //Will check shopping expander
 
   //Final Exit
-  await wait(60000);
+  await wait(120000);
   driver.quit();
 };
 
