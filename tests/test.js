@@ -233,14 +233,13 @@ const test = async () => {
   };
 
   //Activation
-  await login();
-  await checkSettings();
-  await checkAppSuiteAudienceConstructor();
+  await login(); //Logs in
+  await checkSettings(); // Checks all settings
+  await checkAppSuiteAudienceConstructor(); //Will check until map loads
 
   //Final Exit
-  await wait(1000);
-  console.log('exit');
-  // driver.quit();
+  await wait(60000);
+  driver.quit();
 };
 
 test();
