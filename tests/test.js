@@ -63,6 +63,18 @@ const test = async () => {
     await clickId('settingsDone', 500);
   };
 
+  const exitMapView = async (doSave) => {
+    await waitForId('mapViewClose', 500);
+    await clickId('mapViewClose', 500);
+    if (doSave) {
+      await waitForId('closeMapViewWithSave', 100);
+      await clickId('closeMapViewWithSave', 500);
+    } else {
+      await waitForId('closeMapViewWithoutSave', 100);
+      await clickId('closeMapViewWithoutSave', 500);
+    }
+  };
+
   const checkAppSuiteAudienceConstructor = async () => {
     await waitForId('appSuiteAudienceConstructor', 500);
     await clickId('appSuiteAudienceConstructor', 500);
@@ -105,7 +117,12 @@ const test = async () => {
     };
 
     //Functions for AudienceConstructor Options
-    const clickAudienceOption = async (titleId, topicId, numOfOptions = 1) => {
+    const clickAudienceOption = async (
+      titleId,
+      topicId,
+      numOfOptions = 1,
+      exclude = false
+    ) => {
       await clickId(titleId, 500);
       await clickId(topicId, 500);
       await clickId('audienceConstructorGroupBox', 500); //Put into group box
@@ -119,6 +136,10 @@ const test = async () => {
         await clickId(`audienceConstructorOption${i}`, 25);
       }
       await wait(500);
+      if (exclude) {
+        await clickId('audienceConstructorExclude', 500);
+        await wait(500);
+      }
       await clickId('audienceConstructorOptionDone', 100);
       await clickId(titleId, 500);
     };
@@ -135,12 +156,14 @@ const test = async () => {
     };
 
     const checkRefreshEstimate = async () => {
-      await clickAudienceOption('eachAudTitle2', 'eachTopic3', 6); //dem_1
+      await waitForId('eachAudTitle2', 100);
+      await clickAudienceOption('eachAudTitle2', 'eachTopic3', 6); //dem_4
       await clickId('audienceConstructorRefreshEstimate');
+      let firstValue = '';
       await driver.wait(async function () {
         let element = await driver.findElement(By.id('refreshEstimateValue'));
         let value = await element.getText();
-
+        firstValue = value;
         // console.log('value', parseInt(value));
 
         if (!isNaN(parseInt(value)) && parseInt(value) !== 0) {
@@ -148,23 +171,70 @@ const test = async () => {
         }
         // return text === expectedText;
       }, 10000);
+      await wait(1000);
+      //Return to zero
+      // await clickId('audienceConstructorSelectedRemovedem_4', 1000);
+      // await clickId('audienceConstructorRefreshEstimate', 500);
+      // await driver.wait(async function () {
+      //   let element = await driver.findElement(By.id('refreshEstimateValue'));
+      //   let value = await element.getText();
+
+      //   // console.log('value', parseInt(value));
+
+      //   if (isNaN(parseInt(value)) || !value || parseInt(value) === 0) {
+      //     return true;
+      //   }
+      //   // return text === expectedText;
+      // }, 10000);
       //Try another
-      await clickId('audienceConstructorSelectedRemovedem_4', 1000);
-      await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6); //dem_4
+
+      await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6, 'exclude'); //dem_4
+      await clickId('audienceConstructorGroupOr', 500);
       await clickId('audienceConstructorRefreshEstimate');
+
+      await driver.wait(async function () {
+        let element = await driver.findElement(By.id('refreshEstimateValue'));
+        let value = await element.getText();
+
+        // console.log('value', parseInt(value));
+
+        if (
+          !isNaN(parseInt(value)) &&
+          parseInt(value) !== 0 &&
+          value !== firstValue
+        ) {
+          return true;
+        }
+        // return text === expectedText;
+      }, 10000);
     };
     //Activate Here
-    // await checkEachTitle();
-    // await checkSearchModes();
-    // await addingAndClearing();
+    await checkEachTitle();
+    await checkSearchModes();
+    await addingAndClearing();
     await checkRefreshEstimate();
 
+    //Opens app
+    await waitForId('audienceConstructorCreateNewAudienceButton');
+    await clickId('audienceConstructorCreateNewAudienceButton', 1000);
+
+    await driver.wait(async () => {
+      await waitForId('audienceSizeMetric', 100);
+      let element = await driver.findElement(By.id('audienceSizeMetric'));
+      let value = await element.getText();
+      if (!isNaN(parseInt(value)) && parseInt(value) !== 0) {
+        return true;
+      }
+      // return text === expectedText;
+    }, 30000);
+
+    await exitMapView(false);
     //END OF Audience Constructor Script
   };
 
   //Activation
   await login();
-  // await checkSettings();
+  await checkSettings();
   await checkAppSuiteAudienceConstructor();
 
   //Final Exit
