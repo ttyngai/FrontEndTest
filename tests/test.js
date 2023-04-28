@@ -172,21 +172,6 @@ const runTest = async () => {
         // return text === expectedText;
       }, 10000);
       await wait(1000);
-      //Return to zero
-      // await clickId('audienceConstructorSelectedRemovedem_4', 1000);
-      // await clickId('audienceConstructorRefreshEstimate', 500);
-      // await driver.wait(async function () {
-      //   let element = await driver.findElement(By.id('refreshEstimateValue'));
-      //   let value = await element.getText();
-
-      //   // console.log('value', parseInt(value));
-
-      //   if (isNaN(parseInt(value)) || !value || parseInt(value) === 0) {
-      //     return true;
-      //   }
-      //   // return text === expectedText;
-      // }, 10000);
-      //Try another
 
       await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6, 'exclude'); //dem_4
       await clickId('audienceConstructorGroupOr', 500);
