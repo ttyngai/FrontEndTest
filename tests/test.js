@@ -79,7 +79,11 @@ const test = async () => {
       .findElement(By.id('audienceConstructorMenuInput'))
       .sendKeys('bank');
     await wait(500);
-    await driver.findElement(By.id('audienceConstructorMenuInput')).clear();
+    for (let i = 0; i < 5; i++) {
+      await driver
+        .findElement(By.id('audienceConstructorMenuInput'))
+        .sendKeys(Key.BACK_SPACE);
+    }
     await wait(500);
     //Thought Expander
     await driver.wait(
@@ -89,17 +93,13 @@ const test = async () => {
     await driver
       .findElement(By.id(`audienceConstructorThoughtExpanderButton`))
       .click();
-    for (let i = 0; i < 5; i++) {
-      await driver
-        .findElement(By.id('audienceConstructorMenuInput'))
-        .sendKeys(Key.BACK_SPACE);
-    }
+
     await wait(500);
     await driver
       .findElement(By.id('audienceConstructorMenuInput'))
       .sendKeys('car');
     await driver.findElement(By.id(`audienceConstructorSearchButton`)).click();
-    await wait(500);
+    await wait(1000);
     //Get Demographics Age
     await driver.findElement(By.id(`audienceConstructorKeywordButton`)).click();
     await wait(500);
@@ -114,6 +114,8 @@ const test = async () => {
     await wait(500);
 
     await driver.findElement(By.id(`eachTopic0`)).click();
+    await wait(500);
+    await driver.findElement(By.id(`audienceConstructorGroupBox`)).click();
   };
 
   //Activation
