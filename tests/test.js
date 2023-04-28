@@ -123,9 +123,9 @@ const runTest = async () => {
       numOfOptions = 1,
       exclude = false
     ) => {
-      await clickId(titleId, 500);
-      await clickId(topicId, 500);
-      await clickId('audienceConstructorGroupBox', 500); //Put into group box
+      await clickId(titleId, 100);
+      await clickId(topicId, 100);
+      await clickId('audienceConstructorGroupBox', 100); //Put into group box
       //Select in checkbox
       await waitForId('audienceConstructorOptionContainer', 100);
       // Clicks select All
@@ -133,7 +133,7 @@ const runTest = async () => {
       await clickId('audienceConstructorOptionSelectAll', 100);
       //Clicks a few
       for (let i = 0; i < numOfOptions; i++) {
-        await clickId(`audienceConstructorOption${i}`, 25);
+        await clickId(`audienceConstructorOption${i}`, 10);
       }
       await wait(500);
       if (exclude) {
