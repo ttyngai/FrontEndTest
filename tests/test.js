@@ -269,8 +269,8 @@ const test = async () => {
 
   //Activation
   await login(); //Logs in
-  // await checkSettings(); // Checks all settings
-  // await checkAppSuiteAudienceConstructor(); //Will check until map loads
+  await checkSettings(); // Checks all settings
+  await checkAppSuiteAudienceConstructor(); //Will check until map loads
   await checkShoppingExpander(); //Will check shopping expander
 
   //Final Exit
