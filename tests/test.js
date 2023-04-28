@@ -3,7 +3,7 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
 const loginAccount = 'timothy.ngai@primedatalytics.com';
 const loginPassword = 'password';
 
-const test = async () => {
+const runTest = async () => {
   let driver = await new Builder().forBrowser('chrome').build();
   //Reusables
   const wait = async (time) => {
@@ -222,7 +222,10 @@ const test = async () => {
       await waitForId('audienceSizeMetric', 100);
       let element = await driver.findElement(By.id('audienceSizeMetric'));
       let value = await element.getText();
-      if (!isNaN(parseInt(value)) && parseInt(value) !== 0) {
+      if (
+        !isNaN(parseInt(value.split('(').join('').split(')').join(''))) &&
+        parseInt(value.split('(').join('').split(')').join('')) !== 0
+      ) {
         return true;
       }
       // return text === expectedText;
@@ -267,15 +270,18 @@ const test = async () => {
     await clickId('closeApplicationModalButton', 500);
   };
 
+  const checkFPDApp = async () => {};
+
   //Activation
   await login(); //Logs in
   await checkSettings(); // Checks all settings
   await checkAppSuiteAudienceConstructor(); //Will check until map loads
+  await checkFPDApp(); // Checking 1P data Explorer
   await checkShoppingExpander(); //Will check shopping expander
 
   //Final Exit
-  await wait(120000);
+  await wait(60000 * 15);
   driver.quit();
 };
 
-test();
+runTest();
