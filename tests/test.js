@@ -10,7 +10,7 @@ const test = async () => {
   };
 
   await driver.get('http://localhost:3000/dashboard/');
-
+  await wait(500);
   const login = async () => {
     await driver.findElement(By.id('navLogin')).click();
     await wait(100);
@@ -57,28 +57,66 @@ const test = async () => {
         await driver.wait(until.elementLocated(By.id(`constructorMenu${idx}`)));
         await wait(100 * idx);
         await driver.findElement(By.id(`constructorMenu${idx}`)).click();
-        // await wait(100 * idx);
       });
     }
+
     await wait(childElements.length * 100);
     await driver.wait(
       until.elementLocated(By.id('audienceConstructorKeywordButton'))
     );
+    // await wait(500);
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('car');
+    await wait(500);
+    await driver.findElement(By.id('audienceConstructorMenuInput')).clear();
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('vehicle');
+    await wait(500);
+    await driver.findElement(By.id('audienceConstructorMenuInput')).clear();
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('bank');
+    await wait(500);
+    await driver.findElement(By.id('audienceConstructorMenuInput')).clear();
+    await wait(500);
+    //Thought Expander
+    await driver.wait(
+      until.elementLocated(By.id('audienceConstructorThoughtExpanderButton'))
+    );
+    await wait(500);
+    await driver
+      .findElement(By.id(`audienceConstructorThoughtExpanderButton`))
+      .click();
+    for (let i = 0; i < 5; i++) {
+      await driver
+        .findElement(By.id('audienceConstructorMenuInput'))
+        .sendKeys(Key.BACK_SPACE);
+    }
     await wait(500);
     await driver
       .findElement(By.id('audienceConstructorMenuInput'))
-      .sendKeys('c');
+      .sendKeys('car');
+    await driver.findElement(By.id(`audienceConstructorSearchButton`)).click();
     await wait(500);
-    await driver
-      .findElement(By.id('audienceConstructorMenuInput'))
-      .sendKeys('a');
+    //Get Demographics Age
+    await driver.findElement(By.id(`audienceConstructorKeywordButton`)).click();
     await wait(500);
-    await driver
-      .findElement(By.id('audienceConstructorMenuInput'))
-      .sendKeys('r');
+    for (let i = 0; i < 5; i++) {
+      await driver
+        .findElement(By.id('audienceConstructorMenuInput'))
+        .sendKeys(Key.BACK_SPACE);
+    }
     await wait(500);
+
+    await driver.findElement(By.id(`eachAudTitle2`)).click();
+    await wait(500);
+
+    await driver.findElement(By.id(`eachTopic0`)).click();
   };
 
+  //Activation
   await login();
   // await checkSettings();
   await checkAppSuiteAudienceConstructor();
