@@ -129,28 +129,35 @@ const test = async () => {
       await clickAudienceOption('eachAudTitle2', 'eachTopic4', 2);
       await clickAudienceOption('eachAudTitle1', 'eachTopic3', 8);
       await clickAudienceOption('eachAudTitle1', 'eachTopic4', 2);
-      await clickId('audienceConstructorSelecteddem_1');
-      await clickId('audienceConstructorSelecteddem_4');
+      await clickId('audienceConstructorSelectedRemovedem_1');
+      await clickId('audienceConstructorSelectedRemovedem_4');
       await clickId('audienceConstructorGroupClearAll', 1000);
     };
 
-    await checkEachTitle();
-    await checkSearchModes();
-    await addingAndClearing(); //Activate Here
-    //Demo refresh estimates
-    await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6); //dem_1
-    await clickId('audienceConstructorRefreshEstimate', 2000);
-    await driver.wait(async function () {
-      let element = await driver.findElement(By.id('refreshEstimateValue'));
-      let value = await element.getText();
+    const checkRefreshEstimate = async () => {
+      await clickAudienceOption('eachAudTitle2', 'eachTopic3', 6); //dem_1
+      await clickId('audienceConstructorRefreshEstimate');
+      await driver.wait(async function () {
+        let element = await driver.findElement(By.id('refreshEstimateValue'));
+        let value = await element.getText();
 
-      // console.log('value', parseInt(value));
+        // console.log('value', parseInt(value));
 
-      if (!isNaN(parseInt(value))) {
-        return true;
-      }
-      // return text === expectedText;
-    }, 10000);
+        if (!isNaN(parseInt(value)) && parseInt(value) !== 0) {
+          return true;
+        }
+        // return text === expectedText;
+      }, 10000);
+      //Try another
+      await clickId('audienceConstructorSelectedRemovedem_4', 1000);
+      await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6); //dem_4
+      await clickId('audienceConstructorRefreshEstimate');
+    };
+    //Activate Here
+    // await checkEachTitle();
+    // await checkSearchModes();
+    // await addingAndClearing();
+    await checkRefreshEstimate();
 
     //END OF Audience Constructor Script
   };
