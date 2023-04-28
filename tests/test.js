@@ -70,54 +70,89 @@ const test = async () => {
     //menu mode
     await waitForId('constructorMenuContainer');
     //Check menu
-    let parentElement = await driver.findElement(
-      By.id('constructorMenuContainer')
-    );
-    let childElements = await parentElement.findElements(By.tagName('div'));
+    const checkEachTitle = async () => {
+      let parentElement = await driver.findElement(
+        By.id('constructorMenuContainer')
+      );
+      let childElements = await parentElement.findElements(By.tagName('div'));
 
-    if (childElements.length > 0) {
-      childElements.forEach(async (each, idx) => {
-        await waitForId(`constructorMenu${idx}`, 50 * idx);
-        await clickId(`constructorMenu${idx}`);
-      });
-    }
-    await wait(childElements.length * 50);
+      if (childElements.length > 0) {
+        childElements.forEach(async (each, idx) => {
+          await waitForId(`constructorMenu${idx}`, 50 * idx);
+          await clickId(`constructorMenu${idx}`);
+        });
+      }
+      await wait(childElements.length * 50);
+    };
 
-    await waitForId('audienceConstructorKeywordButton');
-    // await wait(500);
-    await inputKeyId('audienceConstructorMenuInput', 'car', 500);
-    await backSpaceKeyId('audienceConstructorMenuInput', 500);
-    await inputKeyId('audienceConstructorMenuInput', 'bank', 500);
-    await backSpaceKeyId('audienceConstructorMenuInput', 500);
-    await inputKeyId('audienceConstructorMenuInput', 'coffee', 500);
-    await backSpaceKeyId('audienceConstructorMenuInput', 500);
+    const checkSearchModes = async () => {
+      await waitForId('audienceConstructorKeywordButton');
+      // await wait(500);
+      await inputKeyId('audienceConstructorMenuInput', 'car', 500);
+      await backSpaceKeyId('audienceConstructorMenuInput', 500);
+      await inputKeyId('audienceConstructorMenuInput', 'bank', 500);
+      await backSpaceKeyId('audienceConstructorMenuInput', 500);
+      await inputKeyId('audienceConstructorMenuInput', 'coffee', 500);
+      await backSpaceKeyId('audienceConstructorMenuInput', 500);
 
-    //Thought Expander
-    await waitForId('audienceConstructorThoughtExpanderButton', 500);
-    await clickId('audienceConstructorThoughtExpanderButton', 500);
-    await inputKeyId('audienceConstructorMenuInput', 'car', 1000);
-    await clickId('audienceConstructorSearchButton', 1500);
+      //Thought Expander
+      await waitForId('audienceConstructorThoughtExpanderButton', 500);
+      await clickId('audienceConstructorThoughtExpanderButton', 500);
+      await inputKeyId('audienceConstructorMenuInput', 'car', 1000);
+      await clickId('audienceConstructorSearchButton', 1500);
+      await clickId('audienceConstructorKeywordButton', 500);
+      await backSpaceKeyId('audienceConstructorMenuInput', 500);
+    };
 
-    //Get Demographics Age
-    await clickId('audienceConstructorKeywordButton', 500);
-    await backSpaceKeyId('audienceConstructorMenuInput', 500);
-    await clickId('eachAudTitle2', 500);
-    await clickId('eachTopic0', 500);
-    await clickId('audienceConstructorGroupBox', 500); //Put into group box
+    //Functions for AudienceConstructor Options
+    const clickAudienceOption = async (titleId, topicId, numOfOptions = 1) => {
+      await clickId(titleId, 500);
+      await clickId(topicId, 500);
+      await clickId('audienceConstructorGroupBox', 500); //Put into group box
+      //Select in checkbox
+      await waitForId('audienceConstructorOptionContainer', 100);
+      // Clicks select All
+      await clickId('audienceConstructorOptionSelectAll', 100);
+      await clickId('audienceConstructorOptionSelectAll', 100);
+      //Clicks a few
+      for (let i = 0; i < numOfOptions; i++) {
+        await clickId(`audienceConstructorOption${i}`, 25);
+      }
+      await wait(500);
+      await clickId('audienceConstructorOptionDone', 100);
+      await clickId(titleId, 500);
+    };
+    //Demo adding and clearing
+    const addingAndClearing = async () => {
+      await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6); //dem_1
+      await clickAudienceOption('eachAudTitle2', 'eachTopic3', 6); //dem_4
+      await clickAudienceOption('eachAudTitle2', 'eachTopic4', 2);
+      await clickAudienceOption('eachAudTitle1', 'eachTopic3', 8);
+      await clickAudienceOption('eachAudTitle1', 'eachTopic4', 2);
+      await clickId('audienceConstructorSelecteddem_1');
+      await clickId('audienceConstructorSelecteddem_4');
+      await clickId('audienceConstructorGroupClearAll', 1000);
+    };
 
-    //Select in checkbox
-    await waitForId('audienceConstructorOptionContainer', 100);
-    // Clicks select All
-    await clickId('audienceConstructorOptionSelectAll', 500);
-    await clickId('audienceConstructorOptionSelectAll', 500);
+    await checkEachTitle();
+    await checkSearchModes();
+    await addingAndClearing(); //Activate Here
+    //Demo refresh estimates
+    await clickAudienceOption('eachAudTitle2', 'eachTopic0', 6); //dem_1
+    await clickId('audienceConstructorRefreshEstimate', 2000);
+    await driver.wait(async function () {
+      let element = await driver.findElement(By.id('refreshEstimateValue'));
+      let value = await element.getText();
 
-    //Clicks a few
-    for (let i = 0; i < 6; i++) {
-      await clickId(`audienceConstructorOption${i}`, 100);
-    }
-    await wait(500);
+      // console.log('value', parseInt(value));
 
-    await clickId('audienceConstructorOptionDone', 100);
+      if (!isNaN(parseInt(value))) {
+        return true;
+      }
+      // return text === expectedText;
+    }, 10000);
+
+    //END OF Audience Constructor Script
   };
 
   //Activation
