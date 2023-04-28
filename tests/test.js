@@ -5,7 +5,7 @@ const loginPassword = 'password';
 
 const test = async () => {
   let driver = await new Builder().forBrowser('chrome').build();
-  const waitOut = async (time) => {
+  const wait = async (time) => {
     await driver.sleep(time);
   };
 
@@ -13,45 +13,80 @@ const test = async () => {
 
   const login = async () => {
     await driver.findElement(By.id('navLogin')).click();
-    await waitOut(100);
+    await wait(100);
     await driver.findElement(By.id('form1Example1')).sendKeys(loginAccount);
-    await waitOut(100);
+    await wait(100);
     await driver.findElement(By.id('form1Example2')).sendKeys(loginPassword);
-    await waitOut(100);
+    await wait(100);
     await driver.findElement(By.id('signIn')).click();
-    await waitOut(100);
+    await wait(100);
   };
 
   const checkSettings = async () => {
     await driver.wait(until.elementLocated(By.id('settings')));
-    await waitOut(1000);
+    await wait(500);
     await driver.findElement(By.id('settings')).click();
-    await waitOut(1000);
+    await wait(1000);
     await driver.findElement(By.id('settingSwitchLoadFPD')).click();
-    await waitOut(500);
+    await wait(500);
     await driver.findElement(By.id('settingSwitchLoadFPD')).click();
-    await waitOut(500);
+    await wait(500);
     await driver.findElement(By.id('settingSwitchDarkMode')).click();
-    await waitOut(500);
+    await wait(500);
     await driver.findElement(By.id('settingSwitchDarkMode')).click();
-    await waitOut(500);
+    await wait(500);
     await driver.findElement(By.id('settingsDone')).click();
-    await waitOut(500);
+    await wait(500);
   };
 
   const checkAppSuiteAudienceConstructor = async () => {
+    await driver.wait(until.elementLocated(By.id('settings')));
+    await wait(500);
     await driver.findElement(By.id('appSuiteAudienceConstructor')).click();
-    await waitOut(500);
+    await wait(500);
+    //menu mode
+    await driver.wait(until.elementLocated(By.id('constructorMenuContainer')));
+    //Check menu
+    let parentElement = await driver.findElement(
+      By.id('constructorMenuContainer')
+    );
+    let childElements = await parentElement.findElements(By.tagName('div'));
+
+    if (childElements.length > 0) {
+      childElements.forEach(async (each, idx) => {
+        await driver.wait(until.elementLocated(By.id(`constructorMenu${idx}`)));
+        await wait(100 * idx);
+        await driver.findElement(By.id(`constructorMenu${idx}`)).click();
+        // await wait(100 * idx);
+      });
+    }
+    await wait(childElements.length * 100);
+    await driver.wait(
+      until.elementLocated(By.id('audienceConstructorKeywordButton'))
+    );
+    await wait(500);
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('c');
+    await wait(500);
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('a');
+    await wait(500);
+    await driver
+      .findElement(By.id('audienceConstructorMenuInput'))
+      .sendKeys('r');
+    await wait(500);
   };
 
   await login();
-  await checkSettings();
+  // await checkSettings();
   await checkAppSuiteAudienceConstructor();
 
   //Final Exit
-  await waitOut(10000);
+  await wait(1000);
   console.log('exit');
-  driver.quit();
+  // driver.quit();
 };
 
 test();
